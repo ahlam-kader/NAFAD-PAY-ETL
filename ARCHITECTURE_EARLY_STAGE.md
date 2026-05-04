@@ -1,4 +1,4 @@
-# Architecture — Group G3 (Data Engineering) — **Early Stage**
+# Architecture _ Data Engineering _ **Early Stage**
 
 > Version MVP livrable *immédiatement* avec l'équipe et les moyens actuels.
 > Toutes les briques mentionnées ici sont déjà implémentées dans `pipeline/`,
