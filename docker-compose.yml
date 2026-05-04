@@ -1,0 +1,70 @@
+services:
+  warehouse:
+    image: postgres:16-alpine
+    container_name: nafad_g3_warehouse
+    environment:
+      POSTGRES_DB: ${PG_DB:-warehouse}
+      POSTGRES_USER: ${PG_USER:-nafad}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-nafad_dev_password}
+    ports:
+      - "${PG_HOST_PORT:-5433}:5432"
+    volumes:
+      - warehouse_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER:-nafad} -d ${PG_DB:-warehouse}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  minio:
+    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+    container_name: nafad_g3_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-minioadmin123}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  runner:
+    build: ./pipeline
+    image: nafad_g3_runner:latest
+    container_name: nafad_g3_runner
+    depends_on:
+      warehouse:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      PG_HOST: warehouse
+      PG_PORT: 5432
+      PG_DB: ${PG_DB:-warehouse}
+      PG_USER: ${PG_USER:-nafad}
+      PG_PASSWORD: ${PG_PASSWORD:-nafad_dev_password}
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin123}
+      S3_REGION: eu-west-3
+      S3_USE_SSL: "false"
+      BRONZE_BUCKET: nafad-bronze
+      QUARANTINE_BUCKET: nafad-quarantine
+      DAILY_DUMPS_DIR: /data/daily_dumps
+      SHARED_DIR: /data/shared
+    volumes:
+      - ./daily_dumps:/data/daily_dumps:ro
+      - ./shared:/data/shared:ro
+      - ./sql:/app/sql:ro
+      - ./tests:/app/tests:ro
+    profiles: ["run"]
+
+volumes:
+  warehouse_data:
+  minio_data:

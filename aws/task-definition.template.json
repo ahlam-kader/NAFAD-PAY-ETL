@@ -1,0 +1,40 @@
+{
+  "family": "nafad-g3-pipeline",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "__EXECUTION_ROLE_ARN__",
+  "taskRoleArn": "__TASK_ROLE_ARN__",
+  "containerDefinitions": [
+    {
+      "name": "runner",
+      "image": "__IMAGE_URI__",
+      "essential": true,
+      "command": ["all"],
+      "environment": [
+        { "name": "PG_HOST",          "value": "__RDS_ENDPOINT__" },
+        { "name": "PG_PORT",          "value": "5432" },
+        { "name": "PG_DB",            "value": "warehouse" },
+        { "name": "PG_USER",          "value": "nafad" },
+        { "name": "PG_PASSWORD",      "value": "__RDS_PASSWORD__" },
+        { "name": "S3_REGION",        "value": "eu-west-3" },
+        { "name": "S3_USE_SSL",       "value": "true" },
+        { "name": "S3_USE_IAM_ROLE",  "value": "true" },
+        { "name": "BRONZE_BUCKET",    "value": "__BRONZE_BUCKET__" },
+        { "name": "QUARANTINE_BUCKET","value": "__QUARANTINE_BUCKET__" },
+        { "name": "DAILY_DUMPS_DIR",  "value": "/data/daily_dumps" },
+        { "name": "SHARED_DIR",       "value": "/data/shared" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group":         "/ecs/nafad-g3",
+          "awslogs-region":        "eu-west-3",
+          "awslogs-stream-prefix": "runner",
+          "awslogs-create-group":  "true"
+        }
+      }
+    }
+  ]
+}

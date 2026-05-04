@@ -1,0 +1,22 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "BronzeReadWrite",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:ListBucket",
+        "s3:HeadBucket",
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::__BRONZE_BUCKET__",
+        "arn:aws:s3:::__BRONZE_BUCKET__/*",
+        "arn:aws:s3:::__QUARANTINE_BUCKET__",
+        "arn:aws:s3:::__QUARANTINE_BUCKET__/*"
+      ]
+    }
+  ]
+}
