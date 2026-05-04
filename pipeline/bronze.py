@@ -1,22 +1,11 @@
-"""Bronze layer — copy daily_dumps/* to S3 (MinIO), append lineage metadata.
-
-Idempotency rules:
-  * Each (dump_date, source_file) maps to a deterministic UUID5 batch_id.
-  * The Bronze key is content-addressable enough: same dump_date + filename → same key.
-  * The bronze_runs row is upserted on (dump_date, source_file).
-  * Re-running the same dump produces an identical Bronze key with identical bytes.
-"""
 from __future__ import annotations
-
 import csv
 import hashlib
 import io
 import uuid
 from pathlib import Path
-
 import pandas as pd
 from sqlalchemy import text
-
 from .common.config import CONFIG
 from .common.io import ensure_bucket, pg_tx, put_object, wait_for_pg, wait_for_s3
 from .common.logging_setup import get_logger
@@ -36,10 +25,6 @@ def _sha256(data: bytes) -> str:
 
 
 def _enrich_with_metadata(raw_bytes: bytes, source_file: str, batch_id: str, dump_date: str) -> bytes:
-    """Append lineage columns (`_ingested_at`, `_source_file`, `_batch_id`) to the CSV.
-
-    `_ingested_at` is pinned to the dump date (00:00:00Z) so reruns stay bit-exact.
-    """
     text_in = raw_bytes.decode("utf-8")
     reader = csv.reader(io.StringIO(text_in))
     rows = list(reader)
@@ -66,7 +51,7 @@ def _ingest_one(dump_date: str, file_path: Path) -> dict:
         raise RuntimeError(f"dump too large (>10GB), refusing: {file_path}")
 
     raw = file_path.read_bytes()
-    line_count = max(0, raw.count(b"\n") - 1)  # exclude header
+    line_count = max(0, raw.count(b"\n") - 1) 
     batch_id = str(_deterministic_batch_id(dump_date, file_path.name))
     enriched = _enrich_with_metadata(raw, str(file_path.name), batch_id, dump_date)
     sha = _sha256(enriched)
