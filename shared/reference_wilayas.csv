@@ -1,0 +1,16 @@
+id,code,name,capital,latitude,longitude,population,economic_weight
+1,NKC-N,Nouakchott-Nord,Dar Naim,,,366000,0.2
+2,NKC-O,Nouakchott-Ouest,Tevragh-Zeina,,,163000,0.25
+3,NKC-S,Nouakchott-Sud,Arafat,,,435000,0.15
+4,NDB,Dakhlet Nouadhibou,Nouadhibou,,,123000,0.12
+5,TRZ,Trarza,Rosso,,,272000,0.05
+6,BRK,Brakna,Aleg,,,312000,0.04
+7,GRG,Gorgol,Kaédi,,,335000,0.03
+8,GDM,Guidimaka,Sélibaby,,,267000,0.02
+9,ASB,Assaba,Kiffa,,,325000,0.03
+10,HCH,Hodh Ech Chargui,Néma,,,430000,0.02
+11,HGH,Hodh El Gharbi,Ayoûn el Atroûs,,,294000,0.02
+12,ADR,Adrar,Atar,,,62000,0.03
+13,TGT,Tagant,Tidjikja,,,80000,0.01
+14,INR,Inchiri,Akjoujt,,,19000,0.01
+15,TYS,Tiris Zemmour,Zouerate,,,53000,0.05

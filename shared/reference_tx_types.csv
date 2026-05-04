@@ -1,0 +1,9 @@
+id,code,label,description,requires_destination,requires_merchant,requires_agency,is_credit
+1,DEP,,,false,false,false,false
+2,WIT,,,false,false,false,false
+3,TRF,,,false,false,false,false
+4,PAY,,,false,false,false,false
+5,BIL,,,false,false,false,false
+6,AIR,,,false,false,false,false
+7,SAL,,,false,false,false,false
+8,REV,,,false,false,false,false
