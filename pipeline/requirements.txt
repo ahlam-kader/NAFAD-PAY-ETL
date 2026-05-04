@@ -1,0 +1,10 @@
+pandas==2.2.3
+numpy==2.1.3
+psycopg2-binary==2.9.10
+SQLAlchemy==2.0.36
+boto3==1.35.76
+botocore==1.35.76
+pandera==0.21.0
+multimethod<2.0
+python-dotenv==1.0.1
+pytest==8.3.4
